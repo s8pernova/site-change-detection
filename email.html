@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<body style="margin: 0; background: #f6f7fb">
+		{%- set title = watch_title or watch_url -%} {%- set when_changed =
+		last_changed|default('') -%} {%- set when_checked = last_checked|default('')
+		-%} {%- set durl = diff_url|default('') -%} {%- set purl =
+		preview_url|default('') -%} {%- set raw_patch = (diff_patch or '') -%} {%-
+		set lines = raw_patch.replace('<br />', '\n').splitlines() -%}
+		<div
+			style="
+				font-family: Arial, Helvetica, sans-serif;
+				font-size: 14px;
+				line-height: 1.45;
+				color: #111;
+				margin: 0;
+				padding: 0;
+			"
+		>
+			<div style="font-size: 18px; font-weight: 700; margin: 0 0 6px 0">
+				Change detected
+			</div>
+			<div style="color: #666; margin: 0 0 12px 0">{{ title }}</div>
+			<div style="margin: 0 0 6px 0">
+				<b>URL</b>
+				<a
+					href="{{ watch_url }}"
+					style="color: #0b57d0; text-decoration: underline"
+					>{{ watch_url }}</a
+				>
+			</div>
+			{%- if when_changed %}
+			<div style="margin: 0 0 4px 0"><b>Changed</b> {{ when_changed }}</div>
+			{%- endif %} {%- if when_checked %}
+			<div style="margin: 0 0 10px 0"><b>Checked</b> {{ when_checked }}</div>
+			{%- endif %}
+			<div
+				style="
+					border: 1px solid #ddd;
+					border-radius: 10px;
+					padding: 10px;
+					margin: 12px 0 10px 0;
+				"
+			>
+				<div style="font-size: 12px; color: #666; margin: 0 0 8px 0">
+					<b>Diff</b>
+				</div>
+				<pre
+					style="
+						margin: 0;
+						font-family: Consolas, Menlo, Monaco, monospace;
+						font-size: 12px;
+						line-height: 1.35;
+						white-space: pre-wrap;
+					"
+				>
+{%- if lines and lines|length > 0 -%}
+{%- for line in lines -%}
+{%- if line.startswith('---') or line.startswith('+++') -%}<span style="color:#9aa0a6;">{{ line|e }}</span>
+{%- elif line.startswith('-') -%}<span style="background:#fadad7;color:#b30000;">{{ line|e }}</span>
+{%- elif line.startswith('+') -%}<span style="background:#eaf2c2;color:#406619;">{{ line|e }}</span>
+{%- else -%}{{ line|e }}
+{%- endif -%}{{ "\n" }}
+{%- endfor -%}
+{%- else -%}
+No diff text was provided for this change.
+{%- endif -%}
+    </pre>
+			</div>
+			<div style="font-size: 12px; color: #666">
+				{%- if watch_uuid %}Watch ID {{ watch_uuid }}{%- endif -%} {%- if durl
+				and durl.startswith('http') %} |
+				<a href="{{ durl }}" style="color: #0b57d0; text-decoration: underline"
+					>View diff</a
+				>{%- endif -%} {%- if purl and purl.startswith('http') %} |
+				<a href="{{ purl }}" style="color: #0b57d0; text-decoration: underline"
+					>Preview</a
+				>{%- endif -%}
+			</div>
+		</div>
+	</body>
+</html>
