@@ -6,8 +6,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - PLAYWRIGHT_DRIVER_URL=ws://playwright-chrome:3000/chrome
       - FETCH_WORKERS=1
+      - PLAYWRIGHT_DRIVER_URL=ws://playwright-chrome:3000/chrome?token=cdtoken&launch={"defaultViewport":{"width":1280,"height":720},"headless":true,"stealth":true}&blockAds=true
     volumes:
       - changedetection-data:/datastore
     depends_on:
@@ -17,17 +17,12 @@ services:
     image: ghcr.io/browserless/chrome:v2.38.2
     container_name: playwright-chrome
     restart: unless-stopped
+    shm_size: "1gb"
     environment:
-      - SCREEN_WIDTH=1280
-      - SCREEN_HEIGHT=720
-      - SCREEN_DEPTH=16
-      - ENABLE_DEBUGGER=false
-      - PREBOOT_CHROME=false
-      - MAX_CONCURRENT_SESSIONS=1
-      - CONNECTION_TIMEOUT=120000
-      - CHROME_REFRESH_TIME=600000
-      - DEFAULT_BLOCK_ADS=true
-      - DEFAULT_STEALTH=true
+      - TOKEN=cdtoken
+      - CONCURRENT=1
+      - QUEUED=1
+      - TIMEOUT=300000
 
 volumes:
   changedetection-data:
